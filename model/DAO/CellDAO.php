@@ -1,6 +1,6 @@
 <?php
 
-namespace vending\model;
+namespace vending\model\DAO;
 
 use vending\model\DbConnector;
 
@@ -22,7 +22,7 @@ class CellDAO implements CRUDInterface
     {
         $sql = 'SELECT * FROM `cells`';
         $db = new DbConnector();
-        $data = $db->selectQuery($sql);
+        $data = $db->selectAllQuery($sql);
         $db->closeConnection();
 
         return $data;

@@ -1,6 +1,6 @@
 <?php
 
-namespace vending\model;
+namespace vending\model\DAO;
 
 /**
  * CRUD operations.

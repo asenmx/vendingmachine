@@ -1,130 +1,98 @@
 <?php
 
-namespace vending;
+namespace vending\controller;
 
-/**
- * Class Product.
- * Contains productName, size, and expireDate of the product.
- *
- * @package vending
- */
-abstract class Product
+use vending\model\Chips;
+use vending\model\Cola;
+use vending\model\Snikers;
+
+include_once __DIR__ . '/../model/Chips.php';
+include_once __DIR__ . '/../model/Cola.php';
+include_once __DIR__ . '/../model/Snikers.php';
+
+class Product
 {
-    private $productName; // Name of product.
-    private $size; // Size of product.
-    private $expireDate; // Expire date of product.
-    private $productId; // Id of product.
 
     /**
-     * Product constructor.
-     * Sets productName, quantity, size and expireDate.
-     *
-     * @param $productName sets productName
-     * @param $size sets size of product
-     * @param $expireDate set expire date of product
-     * @param null $productId
+     * Validates if input form for products is valid and if it's valid create products.
+     * @return array
      */
-    public function __construct($productName, $size, $expireDate, $productId = null)
+    public static function createProducts()
     {
-        $this->productId = $productId;
-        $this->productName = $productName;
-        $this->size = $size;
-        $this->expireDate = $expireDate;
-    }
+        $array = [];
+        $productArray = [];
+        $checks = [];
+        for ($x = 0; $x < (count($_POST) - 2) / 4; $x++) {
+            if (($_POST["productExpireDate$x"] != '') || ($_POST["productQuantity$x"] != '') || ($_POST["productPrice$x"] != '')) {
+                $today = new \DateTime();
+                if (($_POST["productQuantity$x"] > 0) && ($_POST["productQuantity$x"] != '') && (ctype_digit($_POST["productQuantity$x"]))) {
+                    $checks[] = true;
+                    $validValues[$x]['validQuantity'] = $_POST["productQuantity$x"];
+                } else {
+                    $checks[] = false;
+                    $invalidValues[$x]['invalidQuantityRed'] = true;
+                    $invalidValues[$x]['invalidQuantity'] = $_POST["productQuantity$x"];
+                }
+                if ($_POST["productExpireDate$x"] != '') {
+                    $htmlDate = $_POST["productExpireDate$x"];
+                    $date = \DateTime::createFromFormat("Y-m-d", "$htmlDate");
+                    if ($date->getTimestamp() >= $today->getTimestamp()) {
+                        $checks[] = true;
+                        $validValues[$x]['validDate'] = $htmlDate;
 
-    /**
-     * Sets price of  product.
-     *
-     * @param $price
-     * @return mixed
-     */
-    abstract public function setPrice($price);
+                    } else {
+                        $checks[] = false;
+                        $invalidValues[$x]['invalidDateRed'] = true;
+                        $invalidValues[$x]['invalidDate'] = $htmlDate;
+                    }
+                } else {
+                    $checks[] = false;
+                    $invalidValues[$x]['invalidDateRed'] = true;
+                }
+                if (($_POST["productPrice$x"] > 0) && ($_POST["productPrice$x"] != '')) {
+                    $checks[] = true;
+                    $validValues[$x]['validPrice'] = $_POST["productPrice$x"];
+                } else {
+                    $checks[] = false;
+                    $invalidValues[$x]['invalidPriceRed'] = true;
+                    $invalidValues[$x]['invalidPrice'] = $_POST["productPrice$x"];
+                }
+            }
+        }
+        if (!in_array(false, $checks) && ($checks != null)) {
+            for ($x = 0; $x < (count($_POST) - 2) / 4; $x++) {
+                for ($y = 0; $y < $_POST["productQuantity$x"]; $y++) {
+                    switch ($_POST["productName$x"]) {
+                        case "Cola":
+                            $productOBJ = new Cola($_POST["productPrice$x"], $date);
+                            break;
+                        case "Chips":
+                            $productOBJ = new Chips($_POST["productPrice$x"], $date);
+                            break;
+                        case "Snikers":
+                            $productOBJ = new Snikers($_POST["productPrice$x"], $date);
+                            break;
+                    }
+                    $productArray[] = $productOBJ;
+                }
+                $array['validValues'] = null;
+                $array['invalidValues'] = null;
+            }
+        } else {
+            if (isset($validValues) && isset($invalidValues)) {
+                $array['validValues'] = $validValues;
+                $array['invalidValues'] = $invalidValues;
+            }
+        }
+        $result = ['productArray' => $productArray, 'values' => $array];
 
-    /** Returns price of product.
-     *
-     * @return mixed
-     */
-    abstract public function getPrice();
 
 
-    /**
-     * Returns product name.
-     *
-     * @return product name
-     */
-    public function getProductName()
-    {
-        return $this->productName;
-    }
-
-    /**
-     * Sets product name.
-     *
-     * @param $productName
-     */
-    public function setProductName($productName)
-    {
-        $this->productName = $productName;
-    }
-
-
-    /**
-     * Returns size of product.
-     *
-     * @return sets
-     */
-    public function getSize()
-    {
-        return $this->size;
-    }
-
-    /**
-     * Sets size of product.
-     *
-     * @param $size
-     */
-    public function setSize($size)
-    {
-        $this->size = $size;
-    }
-
-    /**
-     * Returns expire date of product.
-     *
-     * @return set
-     */
-    public function getExpireDate()
-    {
-        return $this->expireDate;
-    }
-
-    /**
-     * Sets expire date of product.
-     *
-     * @param $expireDate
-     */
-    public function setExpireDate($expireDate)
-    {
-        $this->expireDate = $expireDate;
-    }
-
-    /**
-     * Return productId.
-     *
-     * @return mixed
-     */
-    public function getProductId()
-    {
-        return $this->productId;
-    }
-
-    /**
-     * Sets productId.
-     *
-     * @param mixed $productId
-     */
-    public function setProductId($productId)
-    {
-        $this->productId = $productId;
+        return $result;
     }
 }
+
+
+
+
+

@@ -1,6 +1,6 @@
 <?php
 
-namespace vending;
+namespace vending\model;
 
 /**
  * Class Cell

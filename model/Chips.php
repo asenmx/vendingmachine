@@ -1,19 +1,21 @@
 <?php
 
-namespace vending;
+namespace vending\model;
+
+include_once __DIR__ . '/Product.php';
 
 /**
- * Class Snikers.
+ * Class Chips.
  * Extends product class.
  * Sets properties of extend product class
  * and adds price as property.
  *
  * @package vending
  */
-class Snikers extends Product
+class Chips extends Product
 {
-    CONST TYPEID = 3;
-    CONST SIZE = 1;
+    CONST TYPEID = 2;
+    CONST SIZE = 2;
 
     private $price;
 
@@ -29,7 +31,7 @@ class Snikers extends Product
         $productName = (new \ReflectionClass($this))->getShortName();
 
         $this->price = $price;
-        parent::__construct($productName, SELF::SIZE, $expireDate);
+        parent::__construct($productName, self::SIZE, $expireDate);
     }
 
     /**
@@ -42,11 +44,11 @@ class Snikers extends Product
         return $this->price;
     }
 
+
     /**
-     * Sets price of product.
-     *
+     * Sets a price.
      * @param $price
-     * @return mixed
+     * @return mixed|void
      */
     public function setPrice($price)
     {
@@ -60,7 +62,7 @@ class Snikers extends Product
      */
     public function getTypeId(): int
     {
-        return SELF::TYPEID;
+        return self::TYPEID;
     }
 
 }

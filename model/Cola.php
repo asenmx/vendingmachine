@@ -1,19 +1,21 @@
 <?php
 
-namespace vending;
+namespace vending\model;
+
+include_once __DIR__ . '/Product.php';
 
 /**
- * Class Chips.
+ * Class Cola.
  * Extends product class.
  * Sets properties of extend product class
  * and adds price as property.
  *
  * @package vending
  */
-class Chips extends Product
+class Cola extends Product
 {
-    CONST TYPEID = 2;
-    CONST SIZE = 2;
+    CONST TYPEID = 1;
+    CONST SIZE = 1;
 
     private $price;
 
@@ -27,9 +29,8 @@ class Chips extends Product
     public function __construct($price, $expireDate)
     {
         $productName = (new \ReflectionClass($this))->getShortName();
-
         $this->price = $price;
-        parent::__construct($productName, SELF::SIZE, $expireDate);
+        parent::__construct($productName, self::SIZE, $expireDate);
     }
 
     /**
@@ -56,12 +57,11 @@ class Chips extends Product
 
     /**
      * Returns typeId of product.
-     *
      * @return int
      */
     public function getTypeId(): int
     {
-        return SELF::TYPEID;
+        return self::TYPEID;
     }
 
 }

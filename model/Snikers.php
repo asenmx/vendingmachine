@@ -1,18 +1,20 @@
 <?php
 
-namespace vending;
+namespace vending\model;
+
+include_once __DIR__ . '/Product.php';
 
 /**
- * Class Cola.
+ * Class Snikers.
  * Extends product class.
  * Sets properties of extend product class
  * and adds price as property.
  *
  * @package vending
  */
-class Cola extends Product
+class Snikers extends Product
 {
-    CONST TYPEID = 1;
+    CONST TYPEID = 3;
     CONST SIZE = 1;
 
     private $price;
@@ -27,8 +29,9 @@ class Cola extends Product
     public function __construct($price, $expireDate)
     {
         $productName = (new \ReflectionClass($this))->getShortName();
+
         $this->price = $price;
-        parent::__construct($productName, SELF::SIZE, $expireDate);
+        parent::__construct($productName, self::SIZE, $expireDate);
     }
 
     /**
@@ -40,7 +43,6 @@ class Cola extends Product
     {
         return $this->price;
     }
-
 
     /**
      * Sets price of product.
@@ -55,11 +57,12 @@ class Cola extends Product
 
     /**
      * Returns typeId of product.
+     *
      * @return int
      */
     public function getTypeId(): int
     {
-        return SELF::TYPEID;
+        return self::TYPEID;
     }
 
 }

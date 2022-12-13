@@ -1,6 +1,8 @@
 <?php
 
-namespace vending\model;
+namespace vending\model\DAO;
+
+use vending\model\DbConnector;
 
 include_once __DIR__ . '/CRUDInterface.php';
 include_once __DIR__ . '/../DbConnector.php';
@@ -19,7 +21,7 @@ class ProductsDAO implements CRUDInterface
     {
         $sql = 'SELECT * FROM `products`';
         $db = new DbConnector();
-        $data = $db->selectQuery($sql);
+        $data = $db->selectAllQuery($sql);
         $db->closeConnection();
 
         return $data;
